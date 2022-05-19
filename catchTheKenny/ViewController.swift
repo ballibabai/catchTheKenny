@@ -28,11 +28,24 @@ class ViewController: UIViewController {
     var hideTimer = Timer()
     var highScore = 0
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
         scoreLabel.text = "Score: \(score)"
+        
+        let storedHighScore = UserDefaults.standard.object(forKey: "highscore")
+              
+              if storedHighScore == nil {
+                  highScore = 0
+                  highScoreLabel.text = "Highscore: \(highScore)"
+              }
+              
+              if let newScore = storedHighScore as? Int {
+                  highScore = newScore
+                  highScoreLabel.text = "Highscore: \(highScore)"
+              }
         
         kenny1.isUserInteractionEnabled = true
         kenny2.isUserInteractionEnabled = true
@@ -85,6 +98,8 @@ class ViewController: UIViewController {
             for kenny in kennyArray {
                 kenny.isHidden = true
             }
+        
+        
             
             let random = Int(arc4random_uniform(UInt32(kennyArray.count - 1)))
             kennyArray[random].isHidden = false
@@ -105,6 +120,16 @@ class ViewController: UIViewController {
             timer.invalidate()
             hideTimer.invalidate()
             
+            for kenny in kennyArray {
+                        kenny.isHidden = true
+                    }
+            
+            if self.score > self.highScore {
+                      self.highScore = self.score
+                      highScoreLabel.text = "Highscore: \(self.highScore)"
+                      UserDefaults.standard.set(self.highScore, forKey: "highscore")
+                  }
+            
             let alert = UIAlertController(title: "Time's over", message: "Do you want to play again", preferredStyle: UIAlertController.Style.alert)
             let okButton = UIAlertAction(title: "OK", style: UIAlertAction.Style.cancel, handler: nil)
             let replayButton = UIAlertAction(title: "Replay", style: UIAlertAction.Style.default) { UIAlertAction in
@@ -113,7 +138,7 @@ class ViewController: UIViewController {
                 self.counter = 10
                 self.timeLabel.text = String(self.counter)
                                 
-                                
+               
                 self.timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.countDown), userInfo: nil, repeats: true)
                 self.hideTimer = Timer.scheduledTimer(timeInterval: 0.4, target: self, selector: #selector(self.hideKenny), userInfo: nil, repeats: true)
                 
