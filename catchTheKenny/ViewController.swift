@@ -33,6 +33,8 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
+        kennyArray = [kenny1, kenny2, kenny3, kenny4, kenny5, kenny6, kenny7, kenny8, kenny9]
+        
         scoreLabel.text = "Score: \(score)"
         
         let storedHighScore = UserDefaults.standard.object(forKey: "highscore")
@@ -79,16 +81,15 @@ class ViewController: UIViewController {
         kenny9.addGestureRecognizer(recognizer9)
          
         
-        kennyArray = [kenny1, kenny2, kenny3, kenny4, kenny5, kenny6, kenny7, kenny8, kenny9]
                 
                 //Timers
                 counter = 10
                 timeLabel.text = String(counter)
                 
                 timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(countDown), userInfo: nil, repeats: true)
-                hideTimer = Timer.scheduledTimer(timeInterval: 0.4, target: self, selector: #selector(hideKenny), userInfo: nil, repeats: true)
+               hideTimer = Timer.scheduledTimer(timeInterval: 0.4, target: self, selector: #selector(hideKenny), userInfo: nil, repeats: true)
                 
-                hideKenny()
+               hideKenny()
          
     }
 
@@ -101,7 +102,7 @@ class ViewController: UIViewController {
         
         
             
-            let random = Int(arc4random_uniform(UInt32(kennyArray.count - 1)))
+           let random = Int(arc4random_uniform(UInt32(kennyArray.count - 1)))
             kennyArray[random].isHidden = false
             
         }
@@ -109,6 +110,13 @@ class ViewController: UIViewController {
     @objc func increaseScore() {
         score += 1
         scoreLabel.text = "Score: \(score)"
+        
+        
+        if self.score > self.highScore {
+                  self.highScore = self.score
+                  highScoreLabel.text = "Highscore: \(self.highScore)"
+                  UserDefaults.standard.set(self.highScore, forKey: "highscore")
+              }
     }
     
     @objc func countDown() {
@@ -124,11 +132,6 @@ class ViewController: UIViewController {
                         kenny.isHidden = true
                     }
             
-            if self.score > self.highScore {
-                      self.highScore = self.score
-                      highScoreLabel.text = "Highscore: \(self.highScore)"
-                      UserDefaults.standard.set(self.highScore, forKey: "highscore")
-                  }
             
             let alert = UIAlertController(title: "Time's over", message: "Do you want to play again", preferredStyle: UIAlertController.Style.alert)
             let okButton = UIAlertAction(title: "OK", style: UIAlertAction.Style.cancel, handler: nil)
